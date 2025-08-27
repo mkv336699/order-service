@@ -10,4 +10,4 @@ RabbitMQService.getInstance().initialize()
 // Mount routes
 app.use('/', router)
 
-app.listen(3000, () => console.log('Order service started at port', 3000))
+app.listen(3001, () => console.log('Order service started at port', 3000))
