@@ -52,18 +52,19 @@ A **distributed, event-driven microservices** system built for a modern e-commer
 
 ## 🚀 Current Implementation Status
 
-### ✅ **Product Service** (This Repository)
+### ✅ **Order Service** (This Repository)
+- **Order Management**: Create and manage orders
+- **Payment Initiation**: Trigger payment processing
+- **Event Publishing**: Emit order events to RabbitMQ
+- **Message Consumption**: Handle incoming messages from other services
+- **Type Safety**: Full TypeScript implementation
+- **API Endpoints**: RESTful API for order operations
+
+### 🔄 **Product Service** (Planned)
 - **Product Management**: CRUD operations for products
 - **Cart Operations**: Add items to shopping cart
 - **Data Persistence**: JSON-based storage with file I/O
-- **Type Safety**: Full TypeScript implementation
-- **API Endpoints**: RESTful API for product operations
-
-### 🔄 **Order Service** (Planned)
-- **Order Processing**: Create and manage orders
-- **Payment Initiation**: Trigger payment service
-- **Event Publishing**: Emit order events to event bus
-- **Inventory Management**: Update product availability
+- **Inventory Management**: Track product availability
 
 ### 💳 **Payment Service** (Planned)
 - **Gateway Integration**: Multiple payment providers
@@ -96,6 +97,27 @@ A **distributed, event-driven microservices** system built for a modern e-commer
 
 ## 📁 Project Structure
 
+### **Order Service** (Current Repository)
+```
+order-service/
+├── src/
+│   ├── controllers/          # Business logic handlers
+│   │   ├── orders.ts         # Order management operations
+│   │   └── publish.controller.ts  # Message publishing controller
+│   ├── models/               # Data models and types
+│   │   └── events.ts         # Event type definitions
+│   ├── routes/               # API route definitions
+│   │   └── index.ts          # Main router with all endpoints
+│   ├── services/             # External service integrations
+│   │   └── rabbitmq.service.ts  # RabbitMQ connection & messaging
+│   └── app.ts                # Express application setup & RabbitMQ initialization
+├── dist/                     # Compiled JavaScript output
+├── package.json              # Dependencies and scripts
+├── tsconfig.json            # TypeScript configuration
+└── README.md                # Project documentation
+```
+
+### **Product Service** (Reference Structure)
 ```
 product-service/
 ├── src/
@@ -116,6 +138,13 @@ product-service/
 ├── tsconfig.json            # TypeScript configuration
 └── nodemon.json             # Development server configuration
 ```
+
+## 🔌 API Endpoints
+
+### **Order Service Endpoints**
+- `GET /` - Health check endpoint
+- `GET /publish?routingKey=<key>&message=<msg>` - Publish message to RabbitMQ
+- `POST /orders` - Create new order
 
 ## 🚀 Getting Started
 
