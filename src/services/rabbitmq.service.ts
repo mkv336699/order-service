@@ -1,4 +1,5 @@
 import { Connection } from 'rabbitmq-client'
+import { initiatePayments, paymentCompleted } from '../controllers/orders.js'
 
 class RabbitMQService {
 	private static instance: RabbitMQService | null = null
@@ -7,6 +8,7 @@ class RabbitMQService {
 	private publisher: any = null
 	private consumer: any = null
 
+	// singleton approach, where we use one obj throughout the server's lifecycle
 	public static getInstance(): RabbitMQService {
 		if (!RabbitMQService.instance) {
 			RabbitMQService.instance = new RabbitMQService()
@@ -32,13 +34,15 @@ class RabbitMQService {
 
 		// Consumer
 		this.consumer = rabbit.createConsumer({
-			queue: 'user-events',
+			queue: 'orders',
 			queueOptions: { durable: true },
-			qos: { prefetchCount: 2 },
-			exchanges: [{ exchange: 'my-events', type: 'topic' }],
-			queueBindings: [{ exchange: 'my-events', routingKey: 'users.*' }],
 		}, async (msg) => {
 			console.log('received message (user-events)', msg)
+			if (msg && msg.body && msg.body.cart) {
+				initiatePayments(msg.body.cart)
+			} else if (msg && msg.body && msg.body.hasOwnProperty('paymentStatus')) {
+				paymentCompleted(msg.body.paymentStatus)
+			}
 		})
 
 		this.consumer.on('error', (err: unknown) => {
